@@ -1,3 +1,5 @@
+if (window.bionicEnabled === undefined) window.bionicEnabled = false;
+
 function bionic(text, ratio = 0.4) {
     return text.replace(/\b(\w+)\b/g, (match) => {
         const cutoff = Math.ceil(match.length * ratio);
@@ -25,11 +27,17 @@ function applyBionicReading() {
 }
 
 function revertBionicReading() {
-    const bionicNodes = document.querySelectorAll('data-bionic="true"]');
+    const bionicNodes = document.querySelectorAll('[data-bionic="true"]');
     for (const span of bionicNodes) {
         const textNode = document.createTextNode(span.textContent);
         span.parentElement.replaceChild(textNode, span);
     }
 }
 
-applyBionicReading();
+if (!window.bionicEnabled) {
+    applyBionicReading();
+    window.bionicEnabled = true;
+} else {
+    revertBionicReading();
+    window.bionicEnabled = false;
+}

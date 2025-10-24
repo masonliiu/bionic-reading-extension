@@ -3,20 +3,10 @@ const button = document.getElementById("toggle");
 button.addEventListener("click", async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-    chrome.scripting.executeScript({
+    await chrome.scripting.executeScript({
         target: {tabId: tab.id},
-        func: toggleBionicMode
+        files: ["content.js"]
     });
 
-    button.textContent = button.textContet === "Enable" ? "Disable" : "Enable";
+    button.textContent = button.textContent === "Enable" ? "Disable" : "Enable";
 });
-
-function toggleBionicMode() {
-    if(!window.bionicEnabled) {
-        window.bionicEnabled=true;
-        applyBionicReading();
-    } else {
-        window.bionicEnabled = false;
-        revertBionicReading();
-    }
-}
