@@ -6,6 +6,8 @@ function bionic(text, ratio = 0.4) {
 }
 
 function applyBionicReading() {
+    if (document.querySelectorAll('[data-bionic="true"]').length > 0) return;
+
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
     const nodes = [];
 
@@ -14,11 +16,19 @@ function applyBionicReading() {
     for (const node of nodes) {
         const parent = node.parentElement;
         if (parent && !["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName)) {
-            const html = bionic(node.textContent);
             const span = document.createElement("span");
-            span.innerHTML = html;
+            span.setAttribute("data-bionic", "true");
+            span.innerHTML = bionic(node.textContent);
             parent.replaceChild(span, node);
         }
+    }
+}
+
+function revertBionicReading() {
+    const bionicNodes = document.querySelectorAll('data-bionic="true"]');
+    for (const span of bionicNodes) {
+        const textNode = document.createTextNode(span.textContent);
+        span.parentElement.replaceChild(textNode, span);
     }
 }
 
